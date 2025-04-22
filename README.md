@@ -19,3 +19,12 @@ L'architecture du déploiement est la suivante :
 de données) 
 
 Tous les services sont déployés dans le namespace _standard_.
+
+#### Les fichiers YAML pour le déploiement standard
+
+1. Préparation de l'environnement
+Pour vérifer l'état de K3s:
+
+```#bash
+sudo systemctl status k3s
+```
