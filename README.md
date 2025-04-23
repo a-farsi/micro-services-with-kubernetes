@@ -163,6 +163,13 @@ Pour vérifier le pvc
 kubectl -n standard get pvc
 ```
 
+<p align="center">
+<img src="figures/fig9-pvc_deployment.png" width=100%>
+</p>
+<p align="center">
+</p>
+
+
 Pour déployer la base de données
 
 ```#Bash
@@ -171,6 +178,12 @@ kubectl apply -f postgres-statefulset.yaml
 
 Pour vérifier le service statefulset :
 
+
+<p align="center">
+<img src="figures/fig10-stateful_service_deployment.png" width=100%>
+</p>
+<p align="center">
+</p>
  
 Pour créer le service ClusterIP
 
@@ -182,6 +195,11 @@ Pour créer le service ClusterIP
 ```#Bash
 kubectl -n standard get service
 ```
+<p align="center">
+<img src="figures/fig11-clusterIP_service_deployment.png" width=100%>
+</p>
+<p align="center">
+</p>
 
 Pour déployer l'application FastAPI, nous devons choisir une solution afin que l’image soit accessible au cluster K3s. Cela est dû au fait que notre image a été construite avec Docker et que, par conséquent, K3s ne la voit pas.
 
@@ -194,11 +212,23 @@ docker save fastapi-app:latest -o fastapi-app.tar
 k3s ctr images import fastapi-app.tar 
 ```
 
+<p align="center">
+<img src="figures/fig12-save_docker_image_on_k3s_cluster.png" width=100%>
+</p>
+<p align="center">
+</p>
+
 Puis, nous vérifions si elle est bien enregistrée :
 
 ```#Bash
 k3s crictl images | grep fastapi-app
 ``` 
+
+<p align="center">
+<img src="figures/fig13-check_docker_image_is_saved_on_k3s_cluster.png" width=100%>
+</p>
+<p align="center">
+</p>
 
 En suite, nous créons notre deployment :
 
@@ -211,11 +241,24 @@ Pour vérifier le service deployment :
 ```#Bash
 kubectl -n standard get deployment.yaml
 ``` 
+
+<p align="center">
+<img src="figures/fig14-get_deployment.png" width=100%>
+</p>
+<p align="center">
+</p>
+
 Pour déployer le service ClusterIP :
 
 ```#Bash
 kubectl apply -f fastapi-service.yaml
 ```
+<p align="center">
+<img src="figures/fig15-get_services.png" width=100%>
+</p>
+<p align="center">
+</p>
+
 Pour déployer l'Ingress, nous devons definir un sous-domain _app1.afa.ip-ddns.com_ dans la plateforme _https://cloudns.net_. Les étapes sont définis dans la section 5.
 
 ```#Bash
@@ -224,6 +267,11 @@ kubectl apply -f ingress.yaml
 
 Pour vérifier le service Ingress
 
+<p align="center">
+<img src="figures/fig16-get_ingress.png" width=100%>
+</p>
+<p align="center">
+</p>
 
 
 4. Vérification du déploiement
@@ -233,21 +281,50 @@ Nous vérifions tous les pods dans le namespace standard
 ```#Bash
 kubectl -n standard get pods 
 ``` 
+
+<p align="center">
+<img src="figures/fig17_get_pods.png" width=100%>
+</p>
+<p align="center">
+</p>
+
+
 Pour vérifier les services
 ```#Bash
 kubectl -n standard get services 
 ```
+
+<p align="center">
+<img src="figures/fig18-get_services_in_standard_namespace.png" width=100%>
+</p>
+<p align="center">
+</p>
+
+
 
 Pour vérifier les logs de l'application FastAPI
 
 ```#Bash
 kubectl -n standard logs -l app=fastapi 
 ```
+
+<p align="center">
+<img src="figures/fig19-logs_app_fastapi.png" width=100%>
+</p>
+<p align="center">
+</p>
+
 Pour vérifier les logs de PostgreSQL
 
 ```#Bash
 kubectl -n standard logs -l app=postgres 
 ```
+
+<p align="center">
+<img src="figures/fig20-logs_postgresql.png" width=100%>
+</p>
+<p align="center">
+</p>
 
 #### 5. Configuration du DNS
     1. Créer un compte sur https://cloudns.net.
@@ -272,16 +349,4 @@ Un cluster K3s en mode single node utilise par défaut une base de données SQLi
 nous pouvons sauvegarder cette base de données en exécutant la commande suivante : 
 sudo cp /var/lib/rancher/k3s/server/db/state.db ./k3s-snapshot-$(date +%Y%m%d).db
 
-Collecte des livrables
-
-Nous allons extraire les logs des pods FastAPI
-kubectl -n standard logs -l app=fastapi  > ../LIVRABLES/LOGS/fastapi-logs.txt
-
-Avec la commande suivante, nous allons extraire les logs des pods PostgreSQL
-kubectl -n standard logs -l app=postgres  > ../LIVRABLES/LOGS/postgres-logs.txt
-
-Copier le backup de la BD dans le répertoire LIVRABLE
-
-
-Voici la structure de mon répertoire LIVRABLE:
  
