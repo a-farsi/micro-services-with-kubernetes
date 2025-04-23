@@ -152,64 +152,108 @@ Figure 8: Vérifier que le namespace standard a bien été créé
 </p>
 
 Pour déployer le PVC pour le stockage
+
+```#Bash
 kubectl apply -f pvc.yaml
+```
+
 Pour vérifier le pvc 
+
+```#Bash
 kubectl -n standard get pvc
+```
 
 Pour déployer la base de données
+
+```#Bash
 kubectl apply -f postgres-statefulset.yaml
+```
+
 Pour vérifier le service statefulset :
 
  
 Pour créer le service ClusterIP
+
+```#Bash
 kubectl apply -f postgres-service.yaml
-
+```
 Pour créer le service ClusterIP
-kubectl -n standard get service
 
+```#Bash
+kubectl -n standard get service
+```
 
 Pour déployer l'application FastAPI, nous devons choisir une solution afin que l’image soit accessible au cluster K3s. Cela est dû au fait que notre image a été construite avec Docker et que, par conséquent, K3s ne la voit pas.
-Une alternative consiste à récupérer l’image depuis un registre Docker. L’autre solution est de transférer l’image Docker directement vers le cluster K3s. Nous choisissons cette deuxième solution et utilisons donc la commande ctr pour le faire :
+
+Une alternative consiste à récupérer l’image depuis un registre Docker. 
+
+L’autre solution est de transférer l’image Docker directement vers le cluster K3s. Nous choisissons cette deuxième solution et utilisons donc la commande _ctr_ pour le faire :
+
+```#Bash
 docker save fastapi-app:latest -o fastapi-app.tar 
 k3s ctr images import fastapi-app.tar 
-
+```
 
 Puis, nous vérifions si elle est bien enregistrée :
+
+```#Bash
 k3s crictl images | grep fastapi-app
- 
-En suite, nous créons notrer deployment :
+``` 
+
+En suite, nous créons notre deployment :
+
+```#Bash
 kubectl apply -f fastapi-deployment.yaml
+```
 
 Pour vérifier le service deployment :
-kubectl -n standard get deployment.yaml
- 
-Pour déployer le service ClusterIP :
-kubectl apply -f fastapi-service.yaml
 
-Pour déployer l'Ingress, nous devons definir un sous-domain ‘app1.afa.ip-ddns.com’ dans la plateforme https://cloudns.net. Les étapes sont définis dans la section 5.
+```#Bash
+kubectl -n standard get deployment.yaml
+``` 
+Pour déployer le service ClusterIP :
+
+```#Bash
+kubectl apply -f fastapi-service.yaml
+```
+Pour déployer l'Ingress, nous devons definir un sous-domain _app1.afa.ip-ddns.com_ dans la plateforme _https://cloudns.net_. Les étapes sont définis dans la section 5.
+
+```#Bash
 kubectl apply -f ingress.yaml
+```
+
 Pour vérifier le service Ingress
- 
+
+
+
 4. Vérification du déploiement
 
 Nous vérifions tous les pods dans le namespace standard
-kubectl -n standard get pods 
- 
-Pour vérifier les services
-kubectl -n standard get services 
 
+```#Bash
+kubectl -n standard get pods 
+``` 
+Pour vérifier les services
+```#Bash
+kubectl -n standard get services 
+```
 
 Pour vérifier les logs de l'application FastAPI
+
+```#Bash
 kubectl -n standard logs -l app=fastapi 
-
+```
 Pour vérifier les logs de PostgreSQL
-kubectl -n standard logs -l app=postgres 
 
-5. Configuration du DNS
+```#Bash
+kubectl -n standard logs -l app=postgres 
+```
+
+#### 5. Configuration du DNS
     1. Créer un compte sur https://cloudns.net.
     2. Créer un sous-domaine : app1.afa.ip-ddns.com.
     3. Ajouter un enregistrement A pointant vers l'adresse IP publique de notre VM. 
-6. Test de l'application
+#### 6. Test de l'application
     1. Accéder à l'application via http://app1.afa.ip-ddns.com 
     2. nous affichons le swagger en testant la route /docs en tapant l’url: app1.afa.ip-ddns.com/docs   
 
@@ -222,7 +266,7 @@ kubectl -n standard logs -l app=postgres
 
     5. Vérifier la route /users/count pour obtenir le nombre total d'utilisateurs 
        
-7. Sauvegarde de la base de données ETCD
+#### 7. Sauvegarde de la base de données ETCD
 
 Un cluster K3s en mode single node utilise par défaut une base de données SQLite
 nous pouvons sauvegarder cette base de données en exécutant la commande suivante : 
