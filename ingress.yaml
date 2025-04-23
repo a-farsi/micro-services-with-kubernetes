@@ -1,0 +1,18 @@
+# ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastapi-ingress
+  namespace: standard
+spec:
+  rules:
+  - host:  app1.afa.ip-ddns.com # Remplacez par le bon sous-domaine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fastapi
+            port:
+              number: 80

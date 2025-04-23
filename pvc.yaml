@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: standard
+spec:
+  accessModes:
+    - ReadWriteOnce  # Permet à plusieurs pods dans le même neoud d'écrire
+  resources:
+    requests:
+      storage: 10Gi  # Taille de stockage demandée
+  storageClassName: local-path  # StorageClass par défaut de K3s

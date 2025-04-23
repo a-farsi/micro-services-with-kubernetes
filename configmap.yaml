@@ -1,0 +1,11 @@
+---
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: standard
+data:
+  POSTGRES_DB: storedb
+  POSTGRES_USER: admin
+  POSTGRES_HOST_AUTH_METHOD: trust
